@@ -1,5 +1,3 @@
-require 'octokit'
-
 module Transient
   module Collectors
     class GitHubCollector
@@ -7,6 +5,8 @@ module Transient
 
       def initialize(collector = Octokit)
         @collector = collector
+
+        set_caching_middleware
       end
 
       def collect
@@ -19,6 +19,16 @@ module Transient
 
       def user_events
         collector.user_events('svankmajer')
+      end
+
+      def set_caching_middleware
+        middleware = Faraday::RackBuilder.new do |builder|
+          builder.use :http_cache, store: Transient::Stores::DefaultStore
+          builder.use Octokit::Response::RaiseError
+          builder.adapter Faraday.default_adapter
+        end
+
+        collector.middleware = middleware
       end
     end
   end

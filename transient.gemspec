@@ -17,6 +17,8 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "drawer", "~> 0.0.9"
+  spec.add_dependency "faraday-http-cache", "~> 0.4"
   spec.add_dependency "octokit", "~> 3.3"
 
   spec.add_development_dependency "guard-rspec", "~> 4.3"
