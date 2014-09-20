@@ -3,21 +3,22 @@ require 'octokit'
 module Transient
   module Collectors
     class GitHubCollector
+      attr_reader :collector
+
+      def initialize(collector = Octokit)
+        @collector = collector
+      end
+
       def collect
-        # XXX: Octokit doesn't have conditional request support. x_X
-        Octokit.user_events('svankmajer').map do |event|
-          Transient::Activities::GitHubActivity.new(parsed_event(event))
+        user_events.map do |event|
+          Transient::Activities::GitHubActivity.new(event)
         end
       end
 
       private
 
       def user_events
-        Octokit.user_events('svankmajer')
-      end
-
-      def parsed_event(event)
-        # no-op
+        collector.user_events('svankmajer')
       end
     end
   end
